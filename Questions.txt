@@ -1,0 +1,19 @@
+*/
+Enonce:\cfrac14+\cfrac13=?//
+id:0001//
+reponse:oui//
+reponse:non//
+reponse:non//
+reponse:non//
+time:20	//
+/*
+
+*/
+Enonce:\cfrac56+\cfrac22=?//
+id:0002//
+reponse:oui//
+reponse:non//
+reponse:non//
+reponse:non//
+time:120//
+/*

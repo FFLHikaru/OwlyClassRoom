@@ -1,0 +1,24 @@
+2 fichiers config*nombre de classe : "questions par classe";"élèves et résultats par classes";
+
+
+on lit les fichiers élèves et résultats par classe à l'ouverture pour setup "le choix des classes"
+une fois la classe choisi on roule jeunesse on setup 
+	la liste des élèves et stats des élèves
+	la liste des questions
+	le nom de la classe
+
+Les résultats sont un tableau de 500 par 35 avec 2 case dans chacune des cases (une pour le nombre de bonne réponse et l'autre pour le nombre de tentatives)
+Les questions seront du 500*6 (id,enonce,repb,repf,repf,repf,average)
+
+
+screen : 
+AppScreen(QstackedWidget)
+	Selection de la classe:
+		Loading des deux tableaux après le click sur l'un des boutons
+			listeClasse.csv
+			listeEleve*nomDeLaClasse*.csv
+			listeQuestion*nomDeLaClasse*.csv	
+		
+	MainScreen(BottomNavBar):
+		scannerScreen
+		resultatScreen
