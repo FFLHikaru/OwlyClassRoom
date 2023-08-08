@@ -18,4 +18,27 @@ def tex2svg(formula, fontsize=12, dpi=300):
     plt.close(fig)
 
     output.seek(0)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     return output.read()
