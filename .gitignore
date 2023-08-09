@@ -1,0 +1,5 @@
+*.csv
+./Scripts
+./pycache
+./Lib
+./share
