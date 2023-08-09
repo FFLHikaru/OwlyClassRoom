@@ -1,5 +1,7 @@
 *.csv
-./Scripts
-./pycache
-./Lib
-./share
+Scripts/
+__pycache__/
+Lib/
+share/
+*.jpg
+pyvenv.cfg
