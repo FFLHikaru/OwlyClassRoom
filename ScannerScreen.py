@@ -95,7 +95,7 @@ class ScannerScreen(QFrame):
                 incl=markersInclinaison[j][0]
                 dx=incl[1][0]-incl[0][0]
                 dy=incl[1][1]-incl[0][1]
-                if abs(dy/(dx+1))<=0.25:
+                if abs(dy/(dx+1))<0.5:
                     self.colorierPrenom(markerIds[j][0])
                     if dx>0:
                     
@@ -122,7 +122,7 @@ class ScannerScreen(QFrame):
                                 self.reponseScanned.append(['B',markerIds[j][0]])
                         else:
                             self.reponseScanned.append(['B',markerIds[j][0]])
-                elif abs(dy/(dx+1))>=0.75:
+                elif abs(dy/(dx+1))>=0.50:
                     self.colorierPrenom(markerIds[j][0])
                     if dy>0:
                         if len(self.reponseScanned)>0:
@@ -146,18 +146,14 @@ class ScannerScreen(QFrame):
                                 self.reponseScanned.append(['D',markerIds[j][0]])
                         else:
                             self.reponseScanned.append(['D',markerIds[j][0]])
-        
+    
         
     def colorierPrenom(self,id):
-        print(len(self.listePrenomGauche))
         if id>len(self.listePrenomGauche):
-            print(id-len(self.listePrenomGauche)-1)
             index=self.listeModelDroite.index(id-len(self.listePrenomGauche)-1,0)
-            print(type(index))
             self.selectionModelDroite.select(index,QItemSelectionModel.Select)
         else:
             index = self.list_modelGauche.index(id-1, 0)
-            print(type(index))
             self.selectionModelGauche.select(index, QItemSelectionModel.Select)
             
     
