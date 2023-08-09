@@ -11,7 +11,9 @@ app = QApplication(sys.argv)
 
 # Créer un widget principal pour contenir les autres widgets
 main_widget = QStackedWidget()
+main_widget.setStyleSheet('background-color:grey')
 classSelectionScreen=ClassSelectionScreen()
+
 
 
 def classSelected(texte):

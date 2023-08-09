@@ -9,6 +9,7 @@ import numpy as np
 import random
 import csv
 from textToPix import tex2svg
+from composants import NeumorphicLabel
 
 class ScannerScreen(QFrame):
     nomClasse=''
@@ -146,15 +147,24 @@ class ScannerScreen(QFrame):
                         else:
                             self.reponseScanned.append(['D',markerIds[j][0]])
         
-    def colorierPrenom(self,id):
         
-        if id-1>len(self.listePrenomGauche):
-            index=self.listeModelDroite.index(id%len(self.listePrenomGauche)-1,0)
-            self.selectionModelDroite.select(index,QItemSelectionModel.select)
+    def colorierPrenom(self,id):
+        print(len(self.listePrenomGauche))
+        if id>len(self.listePrenomGauche):
+            print(id-len(self.listePrenomGauche)-1)
+            index=self.listeModelDroite.index(id-len(self.listePrenomGauche)-1,0)
+            print(type(index))
+            self.selectionModelDroite.select(index,QItemSelectionModel.Select)
         else:
             index = self.list_modelGauche.index(id-1, 0)
+            print(type(index))
             self.selectionModelGauche.select(index, QItemSelectionModel.Select)
-        
+            
+    
+    
+    
+    
+    
     def selectQuestion(self,lQuestions):
         listePoids=[]
         additionner=0
@@ -169,11 +179,11 @@ class ScannerScreen(QFrame):
         questionMelange=self.melangerQuestion(lQuestions[idFinal])
         #self.questionShowed.setText(r'$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$')
 
-        self.questionShowed.load(tex2svg(questionMelange[0],2,300))
-        self.reponse1Showed.setText("A : "+questionMelange[1])
-        self.reponse2Showed.setText("B : "+questionMelange[2])
-        self.reponse3Showed.setText("C : "+questionMelange[3])
-        self.reponse4Showed.setText("D : "+questionMelange[4])
+        self.questionShowed.setPixmap(tex2svg('Enonce : '+questionMelange[0],self.questionShowed.width()-10))
+        self.reponse1Showed.setPixmap(tex2svg("A : "+questionMelange[1],self.reponse1Showed.width()-10))
+        self.reponse2Showed.setPixmap(tex2svg("B : "+questionMelange[2],self.reponse2Showed.width()-10))
+        self.reponse3Showed.setPixmap(tex2svg("C : "+questionMelange[3],self.reponse3Showed.width()-10))
+        self.reponse4Showed.setPixmap(tex2svg("D : "+questionMelange[4],self.reponse4Showed.width()-10))
         
         
         
@@ -185,19 +195,19 @@ class ScannerScreen(QFrame):
     
     def __init__(self,listeElevesResultats,listeQuestions,nomClasse):
         
-        self.questionShowed=QSvgWidget()
-        self.questionShowed.setStyleSheet('border-style:dashed; border-color:orange;border-width:3px;border-radius:40;')
-        self.reponse1Showed=QLabel()
-        self.reponse1Showed.setStyleSheet('border-style:dashed; border-color:grey;border-width:3px;border-radius:40;')
+        self.questionShowed=NeumorphicLabel()
+        self.questionShowed.setStyleSheet(' border-radius: 40px;')
+        self.reponse1Showed=NeumorphicLabel()
+        self.reponse1Showed.setStyleSheet('border-radius:40;')
         self.reponse1Showed.setAlignment(Qt.AlignCenter)
-        self.reponse2Showed=QLabel()
-        self.reponse2Showed.setStyleSheet('border-style:dashed; border-color:grey;border-width:3px;border-radius:40;')
+        self.reponse2Showed=NeumorphicLabel()
+        self.reponse2Showed.setStyleSheet('border-radius:40;')
         self.reponse2Showed.setAlignment(Qt.AlignCenter)
-        self.reponse3Showed=QLabel()
-        self.reponse3Showed.setStyleSheet('border-style:dashed; border-color:grey;border-width:3px;border-radius:40;')
+        self.reponse3Showed=NeumorphicLabel()
+        self.reponse3Showed.setStyleSheet('border-radius:40;')
         self.reponse3Showed.setAlignment(Qt.AlignCenter)
-        self.reponse4Showed=QLabel()
-        self.reponse4Showed.setStyleSheet('border-style:dashed; border-color:grey;border-width:3px;border-radius:40;')
+        self.reponse4Showed=NeumorphicLabel()
+        self.reponse4Showed.setStyleSheet('border-radius:40;')
         self.reponse4Showed.setAlignment(Qt.AlignCenter)
         self.nomClasse=nomClasse
         self.listeResultats=listeElevesResultats
@@ -237,6 +247,7 @@ class ScannerScreen(QFrame):
         listeGauche=QListView()
         listeGauche.setEditTriggers(QListView.NoEditTriggers)
         listeGauche.setSelectionMode(QListView.NoSelection)
+       
         listeDroite=QListView()
         listeDroite.setEditTriggers(QListView.NoEditTriggers)
         listeDroite.setSelectionMode(QListView.NoSelection)
@@ -301,10 +312,12 @@ class ScannerScreen(QFrame):
             self.selectionModelDroite.clearSelection()
             self.reponseScanned=[]
         def EnvoyerResultats():
+            print(self.reponseScanned)
             self.bottomButtonsBar.setCurrentWidget(self.buttonDemarrerScan)
             self.scanning=False
             self.selectionModelGauche.clearSelection()
             self.selectionModelDroite.clearSelection()
+            self.selectQuestion(listeQuestions)
             
             self.analyserReponses()
         
