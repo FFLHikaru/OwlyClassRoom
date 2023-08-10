@@ -22,11 +22,11 @@ class MainScreen(QWidget):
         layout = QVBoxLayout()
         def scannerBoutonClicked():
             subMainScreen.setCurrentWidget(scannerScreen)
-            scannerScreen.camera.start()
+            scannerScreen.mainGrid.cameraScreen.camera.start()
             scannerScreen.bottomButtonsBar.setCurrentWidget(scannerScreen.buttonDemarrerScan)
         def resultatBoutonClicked():
             subMainScreen.setCurrentWidget(resultatsScreen)
-            scannerScreen.camera.stop()
+            scannerScreen.mainGrid.cameraScreen.camera.stop()
             
         scannerScreen=ScannerScreen(listeElevesResultats,listeQuestions,nomClasse)
         
@@ -46,9 +46,8 @@ class MainScreen(QWidget):
         resultatBouton.clicked.connect(resultatBoutonClicked)
         layoutLowerTabBar.addWidget(scannerBouton)
         layoutLowerTabBar.addWidget(resultatBouton)
-        lowerTabBar.setLayout(layoutLowerTabBar)
         
-        
+        lowerTabBar.setLayout(layoutLowerTabBar)        
         layout.addWidget(subMainScreen)
         layout.addWidget(lowerTabBar)
         

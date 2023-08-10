@@ -16,6 +16,6 @@ def classSelected(texte):
 classSelectionScreen.boutonClicked.connect(classSelected)
 
 main_widget.addWidget(classSelectionScreen)
-main_widget.resize(1000,1000)
+main_widget.resize(1920,1080)
 main_widget.show()
 sys.exit(app.exec_())                                

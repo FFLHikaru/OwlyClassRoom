@@ -21,6 +21,8 @@ class QuizzScreen(QWidget):
     def __init__(self):
         print('questionScreen')
         super().__init__()
+        
+        self.setStyleSheet('QWidget{border: 3px solid black;}')
         layout=QGridLayout()
         self.questionShowed=NeumorphicLabel()
         self.reponse1Showed=NeumorphicLabel()

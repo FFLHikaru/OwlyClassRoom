@@ -19,7 +19,6 @@ class NeumorphicLabel(QLabel):
         self.setStyleSheet('''
             background-color: #2299FF;
             border-radius: 15px;
-            border: 1px solid #0077CC;
             padding: 10px;
             color: white;
             font-size: 18px;

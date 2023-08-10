@@ -1,8 +1,6 @@
 from PyQt5.QtWidgets import QLabel,QFrame,QVBoxLayout,QStackedWidget,QPushButton,QHBoxLayout,QListView,QWidget,QGridLayout
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtCore import QStringListModel,QItemSelectionModel,QTimer,Qt
-from PyQt5.QtMultimedia import QCamera, QCameraInfo,QCameraImageCapture
-from PyQt5.QtMultimediaWidgets import QCameraViewfinder
 from PyQt5.QtGui import QImage, QPixmap
 import cv2
 import numpy as np
@@ -10,6 +8,8 @@ import random
 import csv
 from scannerScreenComposants.NeumorphicLabel import NeumorphicLabel
 from scannerScreenComposants.QuizzScreen import QuizzScreen
+from scannerScreenComposants.MainGrid import MainGrid
+from scannerScreenComposants.ListesScreen import ListesScreen
 
 class ScannerScreen(QFrame):
     nomClasse=''
@@ -18,18 +18,9 @@ class ScannerScreen(QFrame):
     questionEnCours=[]
     quizzScreen=None
     listeResultats=[]
+    scanning=False
+    mainGrid=None
 
-    def qimage_to_cvimage(self, qimage):
-        # Conversion de QImage à numpy array (OpenCV utilise des numpy arrays pour le traitement d'image)
-        qimage = qimage.convertToFormat(QImage.Format_RGB888)
-        width, height = qimage.width(), qimage.height()
-        ptr = qimage.bits()
-        ptr.setsize(qimage.byteCount())
-        arr = np.array(ptr).reshape(height, width, 3)
-        return arr
-    def capturerImage(self):
-        if self.scanning:
-            self.recordingObject.capture()
     def melangerQuestion(self,question):
         reponse=['A','B','C','D']
         trueAnswer=question[1]
@@ -42,10 +33,10 @@ class ScannerScreen(QFrame):
             i+=1
         self.bonneReponse=reponse[i-1]
         return questionShuffled
+    
     def analyserReponses(self):
-        
-      
         for reponse in self.reponseScanned:
+            print(self.questionEnCours)
             chaine_sans_crochets = self.listeResultats[reponse[1]][self.questionEnCours[1]].strip('[]')
             valeurs = chaine_sans_crochets.split(', ')
             strConvertedList = [int(valeur) for valeur in valeurs]
@@ -60,6 +51,7 @@ class ScannerScreen(QFrame):
             writer = csv.writer(fichier,delimiter=";")
             for ligne in self.listeResultats:
                 writer.writerow(ligne)
+
     def analyserImage(self, requestId, image):
         convertedImage = self.qimage_to_cvimage(image)
         # Convert the image to grayscale for QR code detection
@@ -133,14 +125,27 @@ class ScannerScreen(QFrame):
                             if not existeDeja:
                                 self.reponseScanned.append(['D',markerIds[j][0]])
                         else:
-                            self.reponseScanned.append(['D',markerIds[j][0]])   
+                            self.reponseScanned.append(['D',markerIds[j][0]]) 
+
+    
+    def qimage_to_cvimage(self, qimage):
+        # Conversion de QImage à numpy array (OpenCV utilise des numpy arrays pour le traitement d'image)
+        qimage = qimage.convertToFormat(QImage.Format_RGB888)
+        width, height = qimage.width(), qimage.height()
+        ptr = qimage.bits()
+        ptr.setsize(qimage.byteCount())
+        arr = np.array(ptr).reshape(height, width, 3)
+        return arr
+    
+
     def colorierPrenom(self,id):
-        if id>len(self.listePrenomGauche):
-            index=self.listeModelDroite.index(id-len(self.listePrenomGauche)-1,0)
-            self.selectionModelDroite.select(index,QItemSelectionModel.Select)
+        if id>len(self.mainGrid.listesScreen.listePrenomGauche):
+            index=self.mainGrid.listesScreen.listeModelDroite.index(id-len(self.mainGrid.listesScreen.listePrenomGauche)-1,0)
+            self.mainGrid.listesScreen.selectionModelDroite.select(index,QItemSelectionModel.Select)
         else:
-            index = self.list_modelGauche.index(id-1, 0)
-            self.selectionModelGauche.select(index, QItemSelectionModel.Select)
+            index = self.mainGrid.listesScreen.listModelGauche.index(id-1, 0)
+            self.mainGrid.listesScreen.selectionModelGauche.select(index, QItemSelectionModel.Select)
+
     def selectQuestion(self,lQuestions):
         listePoids=[]
         additionner=0
@@ -153,7 +158,7 @@ class ScannerScreen(QFrame):
             if randomNumber<=poid:
                 idFinal+=1
         questionMelange=self.melangerQuestion(lQuestions[idFinal])
-        self.quizzScreen.setQuestion(questionMelange)
+        self.mainGrid.quizzScreen.setQuestion(questionMelange)
         
         return [questionMelange,idFinal]
     
@@ -162,65 +167,18 @@ class ScannerScreen(QFrame):
         self.reponseScanned=[]
         self.nomClasse=nomClasse
         self.listeResultats=listeElevesResultats
-        self.scanning=False    
+        self.scanning=False 
         super().__init__()
-        self.quizzScreen=QuizzScreen()
-        self.questionEnCours=self.selectQuestion(listeQuestions)
-        self.setStyleSheet("QCameraViewfinder {height: 200px; width: 200px; border-style: solid; border-color: yellow; border-width: 20px; border-radius:120;} QPushButton {background-color: blue;}")
         layout=QVBoxLayout()
-        questionScannerScreen=QWidget()
-        questionScannerLayout=QHBoxLayout()
-        
-        viewfinder = QCameraViewfinder()
-        questionScannerLayout.addWidget(self.quizzScreen,stretch=1)
-        questionScannerLayout.addWidget(viewfinder,stretch=1)
-        questionScannerScreen.setLayout(questionScannerLayout)
+        self.mainGrid=MainGrid(listeElevesResultats)
+        self.questionEnCours=self.selectQuestion(listeQuestions)
+    
         
         
-        middleLayout=QHBoxLayout()
-        middleWidget=QFrame()
-        
-        
-        listeGauche=QListView()
-        listeGauche.setEditTriggers(QListView.NoEditTriggers)
-        listeGauche.setSelectionMode(QListView.NoSelection)
        
-        listeDroite=QListView()
-        listeDroite.setEditTriggers(QListView.NoEditTriggers)
-        listeDroite.setSelectionMode(QListView.NoSelection)
-        
-        
-        self.listePrenomGauche=[ligne[0] for ligne in listeElevesResultats[1:(len(listeElevesResultats)-1)//2+1]]
-        self.list_modelGauche=QStringListModel()
-        self.list_modelGauche.setStringList(self.listePrenomGauche)
-        listeGauche.setModel(self.list_modelGauche)
-        
-        listePrenomDroite=[ligne[0] for ligne in listeElevesResultats[(len(listeElevesResultats)-1)//2+1:]]
-        self.listeModelDroite=QStringListModel()
-        self.listeModelDroite.setStringList(listePrenomDroite)
-        listeDroite.setModel(self.listeModelDroite)
-        
-        self.selectionModelGauche = QItemSelectionModel(self.list_modelGauche)
-        self.selectionModelDroite=QItemSelectionModel(self.listeModelDroite)
-        
-        listeDroite.setSelectionModel(self.selectionModelDroite)
-        listeGauche.setSelectionModel(self.selectionModelGauche)
-        
-        
-        
-        
-        middleLayout.addWidget(listeGauche)
-        middleLayout.addWidget(questionScannerScreen)
-        middleLayout.addWidget(listeDroite)
-        middleWidget.setLayout(middleLayout)
-        layout.addWidget(middleWidget)
-        
-        self.camera = QCamera()
-        self.recordingObject=QCameraImageCapture(self.camera)
-        self.camera.setCaptureMode(QCamera.CaptureStillImage)
-        
-        self.camera.setViewfinder(viewfinder)
-        self.camera.start()  # Start the camera 
+        layout.addWidget(self.mainGrid,stretch=9)
+
+
         self.bottomButtonsBar=QStackedWidget()
         
         self.buttonDemarrerScan=QPushButton("Démarrer le scan")
@@ -245,16 +203,16 @@ class ScannerScreen(QFrame):
         def AnnulerScan():
             self.bottomButtonsBar.setCurrentWidget(self.buttonDemarrerScan)
             self.scanning=False
-            self.selectionModelGauche.clearSelection()
-            self.selectionModelDroite.clearSelection()
+            self.mainGrid.listesScreen.selectionModelGauche.clearSelection()
+            self.mainGrid.listesScreen.selectionModelDroite.clearSelection()
             self.reponseScanned=[]
         def EnvoyerResultats():
             print(self.reponseScanned)
             self.bottomButtonsBar.setCurrentWidget(self.buttonDemarrerScan)
             self.scanning=False
-            self.selectionModelGauche.clearSelection()
-            self.selectionModelDroite.clearSelection()
-            self.selectQuestion(listeQuestions)
+            self.mainGrid.listesScreen.selectionModelGauche.clearSelection()
+            self.mainGrid.listesScreen.selectionModelDroite.clearSelection()
+            self.questionEnCours=self.selectQuestion(listeQuestions)
             
             self.analyserReponses()
         
@@ -264,16 +222,16 @@ class ScannerScreen(QFrame):
             
             
         timer = QTimer(self)
-        timer.timeout.connect(self.capturerImage)
+        timer.timeout.connect(lambda: self.mainGrid.cameraScreen.capturerImage(self.scanning))
         timer.start(500)    
         
         
         self.buttonDemarrerScan.clicked.connect(DemarrerScan)
         self.cancelButton.clicked.connect(AnnulerScan)
         self.sendButton.clicked.connect(EnvoyerResultats)
-        self.recordingObject.imageCaptured.connect(self.analyserImage)
+        self.mainGrid.cameraScreen.recordingObject.imageCaptured.connect(self.analyserImage)
         
-        layout.addWidget(self.bottomButtonsBar)
+        layout.addWidget(self.bottomButtonsBar,stretch=1)
         
         self.setLayout(layout)
         
