@@ -20,7 +20,7 @@ class NeumorphicLabel(QLabel):
             background-color: #2299FF;
             border-radius: 15px;
             border: 1px solid #0077CC;
-            padding: 15px;
+            padding: 10px;
             color: white;
             font-size: 18px;
             border-radius: 40px;               

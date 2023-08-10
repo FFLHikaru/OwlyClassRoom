@@ -8,23 +8,17 @@ import cv2
 import numpy as np
 import random
 import csv
-from textToPix import tex2svg
-from NeumorphicLabel import NeumorphicLabel
+from scannerScreenComposants.NeumorphicLabel import NeumorphicLabel
+from scannerScreenComposants.QuizzScreen import QuizzScreen
 
 class ScannerScreen(QFrame):
     nomClasse=''
     bonneReponse=''
     reponseScanned=[]
     questionEnCours=[]
-    
-    questionShowed=None
-    reponse1Showed=None
-    reponse2Showed=None
-    reponse3Showed=None
-    reponse4Showed=None
-    
-    
+    quizzScreen=None
     listeResultats=[]
+
     def qimage_to_cvimage(self, qimage):
         # Conversion de QImage à numpy array (OpenCV utilise des numpy arrays pour le traitement d'image)
         qimage = qimage.convertToFormat(QImage.Format_RGB888)
@@ -33,11 +27,9 @@ class ScannerScreen(QFrame):
         ptr.setsize(qimage.byteCount())
         arr = np.array(ptr).reshape(height, width, 3)
         return arr
-    
     def capturerImage(self):
         if self.scanning:
             self.recordingObject.capture()
-            
     def melangerQuestion(self,question):
         reponse=['A','B','C','D']
         trueAnswer=question[1]
@@ -50,8 +42,6 @@ class ScannerScreen(QFrame):
             i+=1
         self.bonneReponse=reponse[i-1]
         return questionShuffled
-            
-        
     def analyserReponses(self):
         
       
@@ -70,9 +60,6 @@ class ScannerScreen(QFrame):
             writer = csv.writer(fichier,delimiter=";")
             for ligne in self.listeResultats:
                 writer.writerow(ligne)
-        
-            
-    
     def analyserImage(self, requestId, image):
         convertedImage = self.qimage_to_cvimage(image)
         # Convert the image to grayscale for QR code detection
@@ -146,9 +133,7 @@ class ScannerScreen(QFrame):
                             if not existeDeja:
                                 self.reponseScanned.append(['D',markerIds[j][0]])
                         else:
-                            self.reponseScanned.append(['D',markerIds[j][0]])
-    
-        
+                            self.reponseScanned.append(['D',markerIds[j][0]])   
     def colorierPrenom(self,id):
         if id>len(self.listePrenomGauche):
             index=self.listeModelDroite.index(id-len(self.listePrenomGauche)-1,0)
@@ -156,12 +141,6 @@ class ScannerScreen(QFrame):
         else:
             index = self.list_modelGauche.index(id-1, 0)
             self.selectionModelGauche.select(index, QItemSelectionModel.Select)
-            
-    
-    
-    
-    
-    
     def selectQuestion(self,lQuestions):
         listePoids=[]
         additionner=0
@@ -174,57 +153,26 @@ class ScannerScreen(QFrame):
             if randomNumber<=poid:
                 idFinal+=1
         questionMelange=self.melangerQuestion(lQuestions[idFinal])
-        #self.questionShowed.setText(r'$\sum_{i=1}^{n} i = \frac{n(n+1)}{2}$')
-
-        self.questionShowed.setPixmap(tex2svg('Enonce : '+questionMelange[0],self.questionShowed.width()-10))
-        self.reponse1Showed.setPixmap(tex2svg("A : "+questionMelange[1],self.reponse1Showed.width()-10))
-        self.reponse2Showed.setPixmap(tex2svg("B : "+questionMelange[2],self.reponse2Showed.width()-10))
-        self.reponse3Showed.setPixmap(tex2svg("C : "+questionMelange[3],self.reponse3Showed.width()-10))
-        self.reponse4Showed.setPixmap(tex2svg("D : "+questionMelange[4],self.reponse4Showed.width()-10))
-        
-        
+        self.quizzScreen.setQuestion(questionMelange)
         
         return [questionMelange,idFinal]
-        
-                
-        
-    
     
     def __init__(self,listeElevesResultats,listeQuestions,nomClasse):
         
         self.reponseScanned=[]
-        self.questionShowed=NeumorphicLabel()
-        self.reponse1Showed=NeumorphicLabel()
-        self.reponse2Showed=NeumorphicLabel()
-        self.reponse3Showed=NeumorphicLabel()
-        self.reponse4Showed=NeumorphicLabel()
         self.nomClasse=nomClasse
         self.listeResultats=listeElevesResultats
         self.scanning=False    
-        self.questionEnCours=self.selectQuestion(listeQuestions)
         super().__init__()
+        self.quizzScreen=QuizzScreen()
+        self.questionEnCours=self.selectQuestion(listeQuestions)
         self.setStyleSheet("QCameraViewfinder {height: 200px; width: 200px; border-style: solid; border-color: yellow; border-width: 20px; border-radius:120;} QPushButton {background-color: blue;}")
-
-        
         layout=QVBoxLayout()
-        
         questionScannerScreen=QWidget()
         questionScannerLayout=QHBoxLayout()
         
-        questionScreen=QWidget()
-        questionLayout=QGridLayout()
-        questionLayout.addWidget(self.questionShowed,0,0,10,4)
-        questionLayout.addWidget(self.reponse1Showed,10,0,3,2)
-        questionLayout.addWidget(self.reponse2Showed,13,0,3,2)
-        questionLayout.addWidget(self.reponse3Showed,10,2,3,2)
-        questionLayout.addWidget(self.reponse4Showed,13,2,3,2)
-        
-        questionScreen.setLayout(questionLayout)
-        
-        
-        
         viewfinder = QCameraViewfinder()
-        questionScannerLayout.addWidget(questionScreen,stretch=1)
+        questionScannerLayout.addWidget(self.quizzScreen,stretch=1)
         questionScannerLayout.addWidget(viewfinder,stretch=1)
         questionScannerScreen.setLayout(questionScannerLayout)
         
