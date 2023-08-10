@@ -23,7 +23,9 @@ class NeumorphicLabel(QLabel):
             padding: 15px;
             color: white;
             font-size: 18px;
+            border-radius: 40px;               
         ''')
+        
         
         self.setAlignment(QtCore.Qt.AlignCenter)
         self.setText("Innovative Label")

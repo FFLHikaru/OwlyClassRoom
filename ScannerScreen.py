@@ -9,7 +9,7 @@ import numpy as np
 import random
 import csv
 from textToPix import tex2svg
-from composants import NeumorphicLabel
+from NeumorphicLabel import NeumorphicLabel
 
 class ScannerScreen(QFrame):
     nomClasse=''
@@ -70,6 +70,7 @@ class ScannerScreen(QFrame):
             writer = csv.writer(fichier,delimiter=";")
             for ligne in self.listeResultats:
                 writer.writerow(ligne)
+        
             
     
     def analyserImage(self, requestId, image):
@@ -191,20 +192,12 @@ class ScannerScreen(QFrame):
     
     def __init__(self,listeElevesResultats,listeQuestions,nomClasse):
         
+        self.reponseScanned=[]
         self.questionShowed=NeumorphicLabel()
-        self.questionShowed.setStyleSheet(' border-radius: 40px;')
         self.reponse1Showed=NeumorphicLabel()
-        self.reponse1Showed.setStyleSheet('border-radius:40;')
-        self.reponse1Showed.setAlignment(Qt.AlignCenter)
         self.reponse2Showed=NeumorphicLabel()
-        self.reponse2Showed.setStyleSheet('border-radius:40;')
-        self.reponse2Showed.setAlignment(Qt.AlignCenter)
         self.reponse3Showed=NeumorphicLabel()
-        self.reponse3Showed.setStyleSheet('border-radius:40;')
-        self.reponse3Showed.setAlignment(Qt.AlignCenter)
         self.reponse4Showed=NeumorphicLabel()
-        self.reponse4Showed.setStyleSheet('border-radius:40;')
-        self.reponse4Showed.setAlignment(Qt.AlignCenter)
         self.nomClasse=nomClasse
         self.listeResultats=listeElevesResultats
         self.scanning=False    
