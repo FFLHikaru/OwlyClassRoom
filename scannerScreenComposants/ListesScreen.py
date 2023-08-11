@@ -16,6 +16,18 @@ class ListesScreen(QFrame):
     def __init__(self,listeElevesResultats):
         print(listeElevesResultats)
         super().__init__()
+        self.setStyleSheet('''
+                           background-color:#F8F8FE;
+                           border-width:0px;
+                           border-color:white;
+                           font-size:16px;
+
+                           QListView.item.selected{
+                            background-color:green;
+
+                           }
+
+                           ''')
         layout=QHBoxLayout()
         self.listeGauche=QListView()
         self.listeGauche.setEditTriggers(QListView.NoEditTriggers)

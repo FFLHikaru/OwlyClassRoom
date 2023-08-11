@@ -1,7 +1,7 @@
-from PyQt5.QtWidgets import QLabel,QFrame,QVBoxLayout,QStackedWidget,QPushButton,QHBoxLayout,QListView,QWidget,QGridLayout
+from PyQt5.QtWidgets import QLabel,QFrame,QVBoxLayout,QStackedWidget,QPushButton,QHBoxLayout,QListView,QWidget,QGridLayout,QGraphicsDropShadowEffect
 from PyQt5.QtSvg import QSvgWidget
 from PyQt5.QtCore import QStringListModel,QItemSelectionModel,QTimer,Qt
-from PyQt5.QtGui import QImage, QPixmap
+from PyQt5.QtGui import QImage, QPixmap, QIcon,QColor
 import cv2
 import numpy as np
 import random
@@ -10,6 +10,7 @@ from scannerScreenComposants.NeumorphicLabel import NeumorphicLabel
 from scannerScreenComposants.QuizzScreen import QuizzScreen
 from scannerScreenComposants.MainGrid import MainGrid
 from scannerScreenComposants.ListesScreen import ListesScreen
+from scannerScreenComposants.GraphScreen import GraphScreen
 
 class ScannerScreen(QFrame):
     nomClasse=''
@@ -20,6 +21,15 @@ class ScannerScreen(QFrame):
     listeResultats=[]
     scanning=False
     mainGrid=None
+
+    def destroyCreate(self,afficherGraph):
+        if self.mainGrid.visibleGraph:
+            self.mainGrid.graphScreen.deleteLater()
+            self.mainGrid.visibleGraph=False
+        else:
+            self.mainGrid.graphScreen=GraphScreen(self.reponseScanned)
+            self.mainGrid.layout.addWidget(self.mainGrid.graphScreen,1,1,14,14)
+            self.mainGrid.visibleGraph=True
 
     def melangerQuestion(self,question):
         reponse=['A','B','C','D']
@@ -182,12 +192,31 @@ class ScannerScreen(QFrame):
         self.bottomButtonsBar=QStackedWidget()
         
         self.buttonDemarrerScan=QPushButton("Démarrer le scan")
+        self.buttonDemarrerScan.setStyleSheet('''
+                                              QPushButton{
+                                              font:bold;
+                                              font-size:30px;
+                                              border-radius:30px;
+                                              border-color:black;
+                                              border-width:2px;
+                                              border-style:dotted;
+                                              background-color:#E1ECF4;
+                                              }
+
+                                              QPushButton:hover{
+                                              background-color:#D4E2EF;
+                                              }
+                                              ''')
         self.bottomButtonsBar.addWidget(self.buttonDemarrerScan)
+        
+
         
         self.buttonsPostScan=QFrame()
         buttonsPostScanLayout=QHBoxLayout()
         self.sendButton=QPushButton("enregistrer")
+        self.sendButton.setStyleSheet('font:bold;font-size:20px')
         self.cancelButton=QPushButton("cancel")
+        self.cancelButton.setStyleSheet('font:bold;font-size:20px;')
         buttonsPostScanLayout.addWidget(self.sendButton)
         buttonsPostScanLayout.addWidget(self.cancelButton)
         self.buttonsPostScan.setLayout(buttonsPostScanLayout)
@@ -199,13 +228,14 @@ class ScannerScreen(QFrame):
         def DemarrerScan():
             self.bottomButtonsBar.setCurrentWidget(self.buttonsPostScan)
             self.scanning=True
+            self.reponseScanned=[]
             
         def AnnulerScan():
             self.bottomButtonsBar.setCurrentWidget(self.buttonDemarrerScan)
             self.scanning=False
             self.mainGrid.listesScreen.selectionModelGauche.clearSelection()
             self.mainGrid.listesScreen.selectionModelDroite.clearSelection()
-            self.reponseScanned=[]
+            
         def EnvoyerResultats():
             print(self.reponseScanned)
             self.bottomButtonsBar.setCurrentWidget(self.buttonDemarrerScan)
@@ -230,7 +260,7 @@ class ScannerScreen(QFrame):
         self.cancelButton.clicked.connect(AnnulerScan)
         self.sendButton.clicked.connect(EnvoyerResultats)
         self.mainGrid.cameraScreen.recordingObject.imageCaptured.connect(self.analyserImage)
-        
+        self.mainGrid.graphiqueButton.clicked.connect(self.destroyCreate)
         layout.addWidget(self.bottomButtonsBar,stretch=1)
         
         self.setLayout(layout)

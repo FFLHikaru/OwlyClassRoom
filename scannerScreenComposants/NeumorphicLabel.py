@@ -7,17 +7,9 @@ class NeumorphicLabel(QLabel):
     def __init__(self):
         super().__init__()
 
-        # Créer un effet de surbrillance
-        highlight_effect = QGraphicsDropShadowEffect(self)
-        highlight_effect.setBlurRadius(10)
-        highlight_effect.setColor(QColor('#FFDD55'))
-        highlight_effect.setOffset(0, 0)
-
-        self.setGraphicsEffect(highlight_effect)
-
         # Appliquer un style de fond personnalisé
         self.setStyleSheet('''
-            background-color: #2299FF;
+            background-color: #FFFFFF;
             border-radius: 15px;
             padding: 10px;
             color: white;

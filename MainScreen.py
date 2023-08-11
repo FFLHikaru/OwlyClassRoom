@@ -42,7 +42,37 @@ class MainScreen(QWidget):
         layoutLowerTabBar=QHBoxLayout()
         scannerBouton=QPushButton('Scanner')
         scannerBouton.clicked.connect(scannerBoutonClicked)
+        scannerBouton.setStyleSheet('''
+                                              QPushButton{
+                                              font:bold;
+                                              font-size:20px;
+                                              border-radius:100px;
+                                              border-color:black;
+                                              border-width:2px;
+                                              border-style:dotted;
+                                              background-color:white;
+                                              }
+
+                                              QPushButton:hover{
+                                              background-color:#D4E2EF;
+                                              }
+                                              ''')
         resultatBouton=QPushButton('Résultats')
+        resultatBouton.setStyleSheet('''
+                                              QPushButton{
+                                              font:bold;
+                                              font-size:20px;
+                                              border-radius:30px;
+                                              border-color:black;
+                                              border-width:2px;
+                                              border-style:dotted;
+                                              background-color:white;
+                                              }
+
+                                              QPushButton:hover{
+                                              background-color:#D4E2EF;
+                                              }
+                                              ''')
         resultatBouton.clicked.connect(resultatBoutonClicked)
         layoutLowerTabBar.addWidget(scannerBouton)
         layoutLowerTabBar.addWidget(resultatBouton)
