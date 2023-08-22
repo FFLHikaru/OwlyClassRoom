@@ -21,6 +21,16 @@ class ScannerScreen(QFrame):
     listeResultats=[]
     scanning=False
     mainGrid=None
+    liste_questions=[]
+    is_responses_showed=False
+
+    def on_afficher_reponses_eleves_clicked(self):
+        if not self.is_responses_showed:
+            self.mainGrid.listesScreen.set_all_scanned_responses(self.reponseScanned)
+            self.is_responses_showed = True
+        else : 
+            self.mainGrid.listesScreen.delete_all_responses()
+            self.is_responses_showed = False
 
     def destroyCreate(self,afficherGraph):
         if self.mainGrid.visibleGraph:
@@ -45,13 +55,16 @@ class ScannerScreen(QFrame):
         return questionShuffled
     
     def analyserReponses(self):
+        nombre_reponses=0
+        nombre_bonnes_reponses=0
         for reponse in self.reponseScanned:
-            print(self.questionEnCours)
             chaine_sans_crochets = self.listeResultats[reponse[1]][self.questionEnCours[1]].strip('[]')
             valeurs = chaine_sans_crochets.split(', ')
             strConvertedList = [int(valeur) for valeur in valeurs]
             if reponse[0]==self.bonneReponse:
+                nombre_bonnes_reponses+=1
                 strConvertedList[0]+=1
+            nombre_reponses+=1
             strConvertedList[1]+=1
             elementChained=[str(element) for element in strConvertedList]
             chaine_resultante = '[' + ', '.join(elementChained) + ']'
@@ -61,6 +74,16 @@ class ScannerScreen(QFrame):
             writer = csv.writer(fichier,delimiter=";")
             for ligne in self.listeResultats:
                 writer.writerow(ligne)
+        if self.reponseScanned!=[]:
+            print(nombre_bonnes_reponses/nombre_reponses)
+            print(self.liste_questions[self.questionEnCours[-1]][-1])
+            self.liste_questions[self.questionEnCours[-1]][-1]=str(nombre_bonnes_reponses/nombre_reponses)
+        with open(f"listeQuestion{self.nomClasse}.csv", newline='', mode='w') as fichier:
+            writer = csv.writer(fichier,delimiter=";")
+            for ligne in self.liste_questions:
+                writer.writerow(ligne)
+        print(self.liste_questions)
+        
 
     def analyserImage(self, requestId, image):
         convertedImage = self.qimage_to_cvimage(image)
@@ -94,11 +117,17 @@ class ScannerScreen(QFrame):
                             for rep in range(len(self.reponseScanned)):
                                 if self.reponseScanned[rep][1]==markerIds[j][0]:
                                     self.reponseScanned[rep][0]='A'
+                                    if self.is_responses_showed:
+                                        self.mainGrid.listesScreen.set_response_to_eleve(markerIds[j][0], ' A')
                                     existeDeja=True
                             if  not existeDeja:
                                 self.reponseScanned.append(['A',markerIds[j][0]])
+                                if self.is_responses_showed:
+                                    self.mainGrid.listesScreen.set_response_to_eleve(markerIds[j][0], ' A')
                         else:
                             self.reponseScanned.append(['A',markerIds[j][0]])
+                            if self.is_responses_showed:
+                                self.mainGrid.listesScreen.set_response_to_eleve(markerIds[j][0], ' A')
                             
                         
                     else:
@@ -108,10 +137,17 @@ class ScannerScreen(QFrame):
                                 if self.reponseScanned[rep][1]==markerIds[j][0]:
                                     self.reponseScanned[rep][0]='B'
                                     existeDeja=True
+                                    if self.is_responses_showed:
+                                        self.mainGrid.listesScreen.set_response_to_eleve(markerIds[j][0], ' B')
                             if not existeDeja:
                                 self.reponseScanned.append(['B',markerIds[j][0]])
+                                if self.is_responses_showed:
+                                    self.mainGrid.listesScreen.set_response_to_eleve(markerIds[j][0], ' B')
                         else:
                             self.reponseScanned.append(['B',markerIds[j][0]])
+                            if self.is_responses_showed:
+                                self.mainGrid.listesScreen.set_response_to_eleve(markerIds[j][0], ' B')
+
                 elif abs(dy/(dx+1))>=0.50:
                     self.colorierPrenom(markerIds[j][0])
                     if dy>0:
@@ -121,10 +157,16 @@ class ScannerScreen(QFrame):
                                 if self.reponseScanned[rep][1]==markerIds[j][0]:
                                     self.reponseScanned[rep][0]='C'
                                     existeDeja=True
+                                    if self.is_responses_showed:
+                                        self.mainGrid.listesScreen.set_response_to_eleve(markerIds[j][0], ' C')
                             if not existeDeja:
                                 self.reponseScanned.append(['C',markerIds[j][0]])
+                                if self.is_responses_showed:
+                                    self.mainGrid.listesScreen.set_response_to_eleve(markerIds[j][0], ' C')
                         else:
                             self.reponseScanned.append(['C',markerIds[j][0]])
+                            if self.is_responses_showed:
+                                self.mainGrid.listesScreen.set_response_to_eleve(markerIds[j][0], ' C')
                     else:
                         if len(self.reponseScanned)>0:
                             existeDeja=False
@@ -132,10 +174,16 @@ class ScannerScreen(QFrame):
                                 if self.reponseScanned[rep][1]==markerIds[j][0]:
                                     self.reponseScanned[rep][0]='D'
                                     existeDeja=True
+                                    if self.is_responses_showed:
+                                        self.mainGrid.listesScreen.set_response_to_eleve(markerIds[j][0], ' D')
                             if not existeDeja:
                                 self.reponseScanned.append(['D',markerIds[j][0]])
+                                if self.is_responses_showed:
+                                    self.mainGrid.listesScreen.set_response_to_eleve(markerIds[j][0], ' D')
                         else:
                             self.reponseScanned.append(['D',markerIds[j][0]]) 
+                            if self.is_responses_showed:
+                               self.mainGrid.listesScreen.set_response_to_eleve(markerIds[j][0], ' D')
 
     
     def qimage_to_cvimage(self, qimage):
@@ -173,7 +221,7 @@ class ScannerScreen(QFrame):
         return [questionMelange,idFinal]
     
     def __init__(self,listeElevesResultats,listeQuestions,nomClasse):
-        
+        self.liste_questions=listeQuestions
         self.reponseScanned=[]
         self.nomClasse=nomClasse
         self.listeResultats=listeElevesResultats
@@ -229,6 +277,9 @@ class ScannerScreen(QFrame):
             self.bottomButtonsBar.setCurrentWidget(self.buttonsPostScan)
             self.scanning=True
             self.reponseScanned=[]
+            self.mainGrid.listesScreen.delete_all_responses()
+            self.is_responses_showed = False
+
             
         def AnnulerScan():
             self.bottomButtonsBar.setCurrentWidget(self.buttonDemarrerScan)
@@ -237,7 +288,6 @@ class ScannerScreen(QFrame):
             self.mainGrid.listesScreen.selectionModelDroite.clearSelection()
             
         def EnvoyerResultats():
-            print(self.reponseScanned)
             self.bottomButtonsBar.setCurrentWidget(self.buttonDemarrerScan)
             self.scanning=False
             self.mainGrid.listesScreen.selectionModelGauche.clearSelection()
@@ -246,8 +296,8 @@ class ScannerScreen(QFrame):
             
             self.analyserReponses()
         
-            
-            
+         
+        
             
             
             
@@ -261,6 +311,7 @@ class ScannerScreen(QFrame):
         self.sendButton.clicked.connect(EnvoyerResultats)
         self.mainGrid.cameraScreen.recordingObject.imageCaptured.connect(self.analyserImage)
         self.mainGrid.graphiqueButton.clicked.connect(self.destroyCreate)
+        self.mainGrid.afficher_reponses_eleves.clicked.connect(self.on_afficher_reponses_eleves_clicked)
         layout.addWidget(self.bottomButtonsBar,stretch=1)
         
         self.setLayout(layout)
