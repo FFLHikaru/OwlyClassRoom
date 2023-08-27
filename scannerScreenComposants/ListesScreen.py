@@ -15,15 +15,14 @@ class ListesScreen(QFrame):
 
     listePrenomGauche=None
     listePrenomDroite=None
-    
+    ### je change la font-size de 16px vers 21px mais il faudra le faire dynamiquement avec le resize de la window. ### 
     def __init__(self,listeElevesResultats):
         super().__init__()
         self.setStyleSheet('''
                            background-color:#F8F8FE;
                            border-width:0px;
                            border-color:white;
-                           font-size:16px;
-
+                           font-size:20px;
                            QListView.item.selected{
                             background-color:green;
 
@@ -77,7 +76,7 @@ class ListesScreen(QFrame):
         longueur_liste_gauche=len( self.listModelGauche.stringList() ) 
         longueur_liste_droite = len( self.listeModelDroite.stringList() )
         longueur_totale = longueur_liste_droite + longueur_liste_gauche
-        for j in range( 1, longueur_totale ) : 
+        for j in range( 1, longueur_totale+1 ) : 
             self.set_response_to_eleve( j , seek_scanned_responses(responses_list, j))
         
 
@@ -99,7 +98,7 @@ class ListesScreen(QFrame):
         longueur_liste_gauche=len( self.listModelGauche.stringList() ) 
         longueur_liste_droite = len( self.listeModelDroite.stringList() )
         longueur_totale = longueur_liste_droite + longueur_liste_gauche
-        for j in range( 1, longueur_totale ) : 
+        for j in range( 1, longueur_totale+1 ) : 
             self.delete_response( j )
 
 
