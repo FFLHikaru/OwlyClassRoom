@@ -13,7 +13,10 @@ def classSelected(texte):
     mainScreen=MainScreen(texte)
     main_widget.addWidget(mainScreen)
     main_widget.setCurrentWidget(mainScreen)
+
 classSelectionScreen.boutonClicked.connect(classSelected)
+
+
 
 main_widget.addWidget(classSelectionScreen)
 main_widget.resize(1920,1080)
