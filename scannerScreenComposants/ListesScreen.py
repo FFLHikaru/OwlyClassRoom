@@ -22,7 +22,7 @@ class ListesScreen(QFrame):
                            background-color:#F8F8FE;
                            border-width:0px;
                            border-color:white;
-                           font-size:20px;
+                           font-size:28px;
                            QListView.item.selected{
                             background-color:green;
 

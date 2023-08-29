@@ -63,8 +63,8 @@ class MainGrid(QFrame):
 
         self.layout=QGridLayout()
         self.layout.addWidget(self.quizzScreen,0,0,16,10)
-        self.layout.addWidget(self.cameraScreen,10,10,6,6,Qt.AlignmentFlag.AlignRight)
-        self.layout.addWidget(self.listesScreen,0,10,10,6)
+        self.layout.addWidget(self.cameraScreen,13,10,3,6,Qt.AlignmentFlag.AlignRight)
+        self.layout.addWidget(self.listesScreen,0,10,13,6)
         self.layout.addWidget(self.graphiqueButton,15,15,1,1)
         self.layout.addWidget(self.afficher_reponses_eleves,14,15,1,1)
         
