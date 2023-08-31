@@ -3,6 +3,7 @@ import csv
 from ScannerScreen import ScannerScreen
 from ResultatsScreen import ResultatsScreen
 from QuestionGestureScreen import QuestionGestureScreen
+from ClassGestureScreen import ClassGestureScreen
 
 class MainScreen(QWidget):
     def __init__(self,nomClasse):
@@ -33,15 +34,22 @@ class MainScreen(QWidget):
             if( subMainScreen.currentWidget == scannerScreen ):
                 scannerScreen.mainGrid.cameraScreen.camera.stop()
             subMainScreen.setCurrentWidget(question_gesture_screen)
+        
+        def class_gesture_button_on_click():
+            if (subMainScreen.currentWidget == scannerScreen):
+                scannerScreen.mainGrid.cameraScreen.camera.stop()
+            subMainScreen.setCurrentWidget(class_gesture_screen)
             
         scannerScreen=ScannerScreen(listeElevesResultats,listeQuestions,nomClasse)
         resultatsScreen=ResultatsScreen()
         question_gesture_screen=QuestionGestureScreen()
+        class_gesture_screen=ClassGestureScreen(nomClasse)
 
         subMainScreen=QStackedWidget()
         subMainScreen.addWidget(scannerScreen)
         subMainScreen.addWidget(resultatsScreen)
         subMainScreen.addWidget(question_gesture_screen)
+        subMainScreen.addWidget(class_gesture_screen)
         subMainScreen.setCurrentWidget(scannerScreen)
         
         lowerTabBar=QWidget()
@@ -95,14 +103,32 @@ class MainScreen(QWidget):
                                               background-color:#D4E2EF;
                                               }
                                             ''')
+        class_gesture_button=QPushButton('Vie de classe')
+        class_gesture_button.setStyleSheet('''
+                                              QPushButton{
+                                              font:bold;
+                                              font-size:20px;
+                                              border-radius:30px;
+                                              border-color:black;
+                                              border-width:2px;
+                                              border-style:dotted;
+                                              background-color:white;
+                                              }
+
+                                              QPushButton:hover{
+                                              background-color:#D4E2EF;
+                                              }
+                                            ''')
 
 
         resultatBouton.clicked.connect(resultatBoutonClicked)
         question_gesture_button.clicked.connect(question_gesture_button_on_click)
+        class_gesture_button.clicked.connect(class_gesture_button_on_click)
 
         layoutLowerTabBar.addWidget(scannerBouton)
         layoutLowerTabBar.addWidget(resultatBouton)
         layoutLowerTabBar.addWidget(question_gesture_button)
+        layoutLowerTabBar.addWidget(class_gesture_button)
         
         lowerTabBar.setLayout(layoutLowerTabBar)        
         layout.addWidget(subMainScreen)
