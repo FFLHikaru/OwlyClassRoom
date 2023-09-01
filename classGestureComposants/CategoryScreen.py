@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QWidget,QVBoxLayout
+from PyQt5.QtWidgets import QWidget,QVBoxLayout,QGridLayout,QPushButton
 import csv
 from PyQt5.QtCore import pyqtSignal
 from classGestureComposants.CategoryButton import CategoryButton
@@ -9,16 +9,18 @@ class CategoryScreen(QWidget):
 
     ####widgets####
     categories_button_list = []
+    container = None
     main_layout = QVBoxLayout()
-    
+    hud_layout = QGridLayout()
+    back_button = None
 
     ####Variables logiques####
     categories_list = []
     comportement_table = []
     
-
     ####Signals####
     category_selected = pyqtSignal( str )
+    back_category_button_clicked = pyqtSignal()
 
 
     def __init__(self,class_name):
@@ -32,20 +34,32 @@ class CategoryScreen(QWidget):
                 self.categories_list.append(self.comportement_table[i][0])
 
         super().__init__()
+
+
         self._set_categories_button_list()
         self._set_button_on_grid()
-        self.setLayout(self.main_layout)
+        self.container=QWidget()
+        self.back_button=QPushButton('Go Back')
+        self.container.setLayout(self.main_layout)
+        self.hud_layout.addWidget(self.container,1,1,20,20)
+        self.hud_layout.addWidget(self.back_button,1,1,1,1)
+        self.setLayout(self.hud_layout)
 
         ####Signals connexion####
         for button in self.categories_button_list : 
             button.button_click.connect(self._on_category_button_click)
 
+        self.back_button.clicked.connect(self._on_back_button_click)
 
 
     ####Signals Responses####
     def _on_category_button_click( self, button : CategoryButton ) -> None : 
         print( button.text() )
         self.category_selected.emit( button.text() )
+        return None
+    
+    def _on_back_button_click( self ) -> None : 
+        self.back_category_button_clicked.emit()
         return None
 
     #### class methods #### 

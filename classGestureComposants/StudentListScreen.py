@@ -10,6 +10,7 @@ class StudentListScreen(QWidget):
     main_Layout=QGridLayout()
 
     ####Variable logic####
+    class_name = '' 
     comportement_table=[]
 
     ####Signals####
@@ -18,6 +19,7 @@ class StudentListScreen(QWidget):
 
 #### init ####
     def __init__(self, class_name):
+        self.class_name = class_name
         with open(f"comportement{class_name}.csv", newline="") as fichier:
             lecteur = csv.reader(fichier, delimiter=";")
             for ligne in lecteur:
@@ -62,12 +64,29 @@ class StudentListScreen(QWidget):
             self.student_button_list.append(StudentButton( student, self.get_student_score( student )))
         return None
 
+    def refresh_colors( self ) -> None : 
+        self.comportement_table = []
+        with open(f"comportement{self.class_name}.csv", newline="") as fichier:
+            lecteur = csv.reader(fichier, delimiter=";")
+            for ligne in lecteur:
+                self.comportement_table.append(ligne)
+        for student_button in self.student_button_list : 
+            student_score = self.get_student_score( student_button.text() )
+            student_button.set_button_color( student_score )
+        
+    
+
+
      #### Signals responses####
 
     def on_student_button_click( self  , button : StudentButton) -> None :
         button.set_button_color( self.get_student_score( button.text() ) )
         self.student_name_set.emit( button.text() )
         return None
+    
+    
+
+
 
 ####Logic####
 

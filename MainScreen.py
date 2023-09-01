@@ -127,8 +127,9 @@ class MainScreen(QWidget):
 
         layoutLowerTabBar.addWidget(scannerBouton)
         layoutLowerTabBar.addWidget(resultatBouton)
-        layoutLowerTabBar.addWidget(question_gesture_button)
         layoutLowerTabBar.addWidget(class_gesture_button)
+        layoutLowerTabBar.addWidget(question_gesture_button)
+        
         
         lowerTabBar.setLayout(layoutLowerTabBar)        
         layout.addWidget(subMainScreen)
