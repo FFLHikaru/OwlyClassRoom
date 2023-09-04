@@ -16,9 +16,12 @@ from scannerScreenComposants.GraphScreen import GraphScreen
 class ScannerScreen(QFrame):
     nomClasse=''
     bonneReponse=''
-    reponseScanned=[]
+    bonneReponse2=''
     questionEnCours=[]
-    quizzScreen=None
+    questionEnCours2=[]
+    
+    reponseScanned=[]
+    
     listeResultats=[]
     scanning=False
     mainGrid=None
@@ -42,7 +45,7 @@ class ScannerScreen(QFrame):
             self.mainGrid.layout.addWidget(self.mainGrid.graphScreen,1,1,14,14)
             self.mainGrid.visibleGraph=True
 
-    def melangerQuestion(self,question):
+    def melangerQuestion1(self,question):
         reponse=['A','B','C','D']
         trueAnswer=question[1]
         reponses=question[1:5]
@@ -53,6 +56,19 @@ class ScannerScreen(QFrame):
         while questionShuffled[i]!=trueAnswer:
             i+=1
         self.bonneReponse=reponse[i-1]
+        return questionShuffled
+    
+    def melangerQuestion2(self,question):
+        reponse=['A','B','C','D']
+        trueAnswer=question[1]
+        reponses=question[1:5]
+        random.shuffle(reponses)
+        questionShuffled=question
+        questionShuffled[1:5]=reponses
+        i=1
+        while questionShuffled[i]!=trueAnswer:
+            i+=1
+        self.bonneReponse2=reponse[i-1]
         return questionShuffled
     
     def analyserReponses(self):
@@ -216,9 +232,23 @@ class ScannerScreen(QFrame):
         for poid in listePoids:
             if randomNumber<=poid:
                 idFinal+=1   
-        questionMelange=self.melangerQuestion(copy_lQuestion[idFinal])
+        questionMelange=self.melangerQuestion1(copy_lQuestion[idFinal])
         self.mainGrid.quizzScreen.setQuestion(questionMelange)
         
+        def selectQuestion2(self,lQuestions):
+        copy_lQuestion = lQuestions[:]
+        listePoids=[]
+        additionner=0
+        idFinal =0
+        for question in lQuestions[1:]:
+            additionner+=float(question[-1])
+            listePoids.append(additionner)
+        randomNumber=random.uniform(0, listePoids[-1])
+        for poid in listePoids:
+            if randomNumber<=poid:
+                idFinal+=1   
+        questionMelange=self.melangerQuestion2(copy_lQuestion[idFinal])
+        self.mainGrid.quizzScreen2.setQuestion(questionMelange
 
         return [questionMelange,idFinal]
     
@@ -232,7 +262,7 @@ class ScannerScreen(QFrame):
         layout=QVBoxLayout()
         self.mainGrid=MainGrid(listeElevesResultats)
         self.questionEnCours=self.selectQuestion(listeQuestions)
-     
+        self.questionEnCours2=self.selectQuestion2(listeQuestions)
     
         
         
@@ -296,6 +326,7 @@ class ScannerScreen(QFrame):
             self.mainGrid.listesScreen.selectionModelGauche.clearSelection()
             self.mainGrid.listesScreen.selectionModelDroite.clearSelection()
             self.questionEnCours=self.selectQuestion(listeQuestions)
+            self.questionEnCours2=self.selectQuestion2(listeQuestions)
             
             self.analyserReponses()
         
