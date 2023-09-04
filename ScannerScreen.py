@@ -6,6 +6,7 @@ import cv2
 import numpy as np
 import random
 import csv
+import copy
 from scannerScreenComposants.NeumorphicLabel import NeumorphicLabel
 from scannerScreenComposants.QuizzScreen import QuizzScreen
 from scannerScreenComposants.MainGrid import MainGrid
@@ -75,14 +76,13 @@ class ScannerScreen(QFrame):
             for ligne in self.listeResultats:
                 writer.writerow(ligne)
         if self.reponseScanned!=[]:
-            print(nombre_bonnes_reponses/nombre_reponses)
-            print(self.liste_questions[self.questionEnCours[-1]][-1])
+           
             self.liste_questions[self.questionEnCours[-1]][-1]=str(nombre_bonnes_reponses/nombre_reponses)
         with open(f"listeQuestion{self.nomClasse}.csv", newline='', mode='w') as fichier:
             writer = csv.writer(fichier,delimiter=";")
             for ligne in self.liste_questions:
                 writer.writerow(ligne)
-        print(self.liste_questions)
+  
         
 
     def analyserImage(self, requestId, image):
@@ -205,6 +205,7 @@ class ScannerScreen(QFrame):
             self.mainGrid.listesScreen.selectionModelGauche.select(index, QItemSelectionModel.Select)
 
     def selectQuestion(self,lQuestions):
+        copy_lQuestion = lQuestions[:]
         listePoids=[]
         additionner=0
         idFinal =0
@@ -214,14 +215,15 @@ class ScannerScreen(QFrame):
         randomNumber=random.uniform(0, listePoids[-1])
         for poid in listePoids:
             if randomNumber<=poid:
-                idFinal+=1
-        questionMelange=self.melangerQuestion(lQuestions[idFinal])
+                idFinal+=1   
+        questionMelange=self.melangerQuestion(copy_lQuestion[idFinal])
         self.mainGrid.quizzScreen.setQuestion(questionMelange)
         
+
         return [questionMelange,idFinal]
     
     def __init__(self,listeElevesResultats,listeQuestions,nomClasse):
-        self.liste_questions=listeQuestions
+        self.liste_questions=copy.deepcopy(listeQuestions[:])
         self.reponseScanned=[]
         self.nomClasse=nomClasse
         self.listeResultats=listeElevesResultats
@@ -230,6 +232,7 @@ class ScannerScreen(QFrame):
         layout=QVBoxLayout()
         self.mainGrid=MainGrid(listeElevesResultats)
         self.questionEnCours=self.selectQuestion(listeQuestions)
+     
     
         
         

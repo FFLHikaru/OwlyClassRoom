@@ -29,8 +29,6 @@ class StudentButton(QPushButton):
     def set_button_color( self , score : int ) -> None :
         color_hex : str = score_to_hexa_string( score )
         self.setStyleSheet(style_sheet( color_hex ))
-    
-        print(color_hex)
         return None
     
 

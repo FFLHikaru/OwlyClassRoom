@@ -54,7 +54,6 @@ class CategoryScreen(QWidget):
 
     ####Signals Responses####
     def _on_category_button_click( self, button : CategoryButton ) -> None : 
-        print( button.text() )
         self.category_selected.emit( button.text() )
         return None
     
