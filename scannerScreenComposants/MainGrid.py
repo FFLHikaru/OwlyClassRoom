@@ -12,6 +12,7 @@ from PyQt5.QtSvg import QSvgRenderer
 class MainGrid(QFrame):
     afficher_reponses_eleves=None
     quizzScreen=None
+    quizzScreen2=None
     cameraScreen=None
     vertBar=None
     layout=None
@@ -30,6 +31,7 @@ class MainGrid(QFrame):
         self.setStyleSheet('MainGrid{background-color:#F8F8FE}')
         #self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         self.quizzScreen=QuizzScreen()
+        self.quizzScreen2=QuizzScreen()
         self.cameraScreen=CameraScreen()
         self.listesScreen=ListesScreen(listeElevesResultats)
         
@@ -62,7 +64,8 @@ class MainGrid(QFrame):
 
 
         self.layout=QGridLayout()
-        self.layout.addWidget(self.quizzScreen,0,0,16,10)
+        self.layout.addWidget(self.quizzScreen,0,0,16,5)
+        self.layout.addWidget(self.quizzScreen2,0,5,16,5)
         self.layout.addWidget(self.cameraScreen,13,10,3,6,Qt.AlignmentFlag.AlignRight)
         self.layout.addWidget(self.listesScreen,0,10,13,6)
         self.layout.addWidget(self.graphiqueButton,15,15,1,1)

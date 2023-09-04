@@ -217,6 +217,7 @@ class ScannerScreen(QFrame):
                 idFinal+=1
         questionMelange=self.melangerQuestion(lQuestions[idFinal])
         self.mainGrid.quizzScreen.setQuestion(questionMelange)
+        self.mainGrid.quizzScreen2.setQuestion(questionMelange)
         
         return [questionMelange,idFinal]
     
