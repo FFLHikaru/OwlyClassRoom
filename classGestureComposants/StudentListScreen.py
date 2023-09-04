@@ -37,7 +37,7 @@ class StudentListScreen(QWidget):
     
     ####Méthodes de classe####
     def get_student_score( self , student_name) -> int : 
-        score = 20
+        score = 10
         for i in range(1,len(self.comportement_table)):
             score += int(self.comportement_table[i][self.get_student_column( student_name )])
         return score
