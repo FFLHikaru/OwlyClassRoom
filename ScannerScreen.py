@@ -47,12 +47,15 @@ class ScannerScreen(QFrame):
         trueAnswer=question[1]
         reponses=question[1:5]
         random.shuffle(reponses)
-        questionShuffled=question
+        questionShuffled=copy.deepcopy(question)
         questionShuffled[1:5]=reponses
         i=1
         while questionShuffled[i]!=trueAnswer:
             i+=1
         self.bonneReponse=reponse[i-1]
+
+    
+        
         return questionShuffled
     
     def analyserReponses(self):
@@ -279,9 +282,6 @@ class ScannerScreen(QFrame):
         def DemarrerScan():
             self.bottomButtonsBar.setCurrentWidget(self.buttonsPostScan)
             self.scanning=True
-            self.reponseScanned=[]
-            self.mainGrid.listesScreen.delete_all_responses()
-            self.is_responses_showed = False
 
             
         def AnnulerScan():
@@ -289,15 +289,23 @@ class ScannerScreen(QFrame):
             self.scanning=False
             self.mainGrid.listesScreen.selectionModelGauche.clearSelection()
             self.mainGrid.listesScreen.selectionModelDroite.clearSelection()
+            self.questionEnCours=self.selectQuestion(listeQuestions)
+            self.reponseScanned=[]
+            self.mainGrid.listesScreen.delete_all_responses()
+            self.is_responses_showed = False
             
         def EnvoyerResultats():
+            self.analyserReponses()
             self.bottomButtonsBar.setCurrentWidget(self.buttonDemarrerScan)
             self.scanning=False
             self.mainGrid.listesScreen.selectionModelGauche.clearSelection()
             self.mainGrid.listesScreen.selectionModelDroite.clearSelection()
             self.questionEnCours=self.selectQuestion(listeQuestions)
+            self.reponseScanned=[]
+            self.mainGrid.listesScreen.delete_all_responses()
+            self.is_responses_showed = False
             
-            self.analyserReponses()
+            
         
          
         

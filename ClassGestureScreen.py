@@ -50,6 +50,14 @@ class ClassGestureScreen(QStackedWidget):
         
 
     ####Methode de classe
+    def get_punishment_value( self, punishment_name : str ) -> int:
+
+        if punishment_name[-3]==' ':
+            return int(punishment_name[-2:])
+        else : 
+            return int(punishment_name[-3:])
+        return 0
+
 
     def save_punition( self ) -> None :
         punishment_index = 0 
@@ -59,7 +67,9 @@ class ClassGestureScreen(QStackedWidget):
         student_index = get_thing_index( self.comportement_table[0], self.student_name )
         print(punishment_index)
         print(student_index)
-        punishment_value = int(self.comportement_table[punishment_index][1][-2:])
+
+        punishment_value = self.get_punishment_value(self.comportement_table[punishment_index][1])
+
         current_punishment_score = int(self.comportement_table[punishment_index][student_index])
         current_new_punishment_score = current_punishment_score + punishment_value
 
