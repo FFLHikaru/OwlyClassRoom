@@ -1,15 +1,17 @@
 
-from PyQt5.QtWidgets import QWidget,QGridLayout,QSizePolicy,QFrame,QPushButton
-from PyQt5.QtCore import Qt,QSize
-from PyQt5.QtGui import QPixmap,QIcon
+from PyQt5.QtWidgets import QLayout, QWidget,QGridLayout,QSizePolicy,QFrame,QPushButton
+
 from scannerScreenComposants.QuizzScreen import QuizzScreen
 from scannerScreenComposants.CameraScreen import CameraScreen
 from scannerScreenComposants.ListesScreen import ListesScreen
 from scannerScreenComposants.NeumorphicLabel import NeumorphicLabel
 from scannerScreenComposants.GraphScreen import GraphScreen
+from scannerScreenComposants.CustomLayout import CustomLayout
 from PyQt5.QtSvg import QSvgRenderer
+from scannerScreenComposants.RoundedButton import RoundedButton
+from PyQt5.QtGui import QPixmap,QIcon
 
-class MainGrid(QFrame):
+class MainGrid(QWidget):
     afficher_reponses_eleves=None
     quizzScreen=None
     cameraScreen=None
@@ -25,51 +27,50 @@ class MainGrid(QFrame):
     
 
     def __init__(self,listeElevesResultats):
+
         
         super().__init__()
-        self.setStyleSheet('MainGrid{background-color:#F8F8FE}')
+        self.setStyleSheet('MainGrid{background-color:red}')
         #self.setSizePolicy(QSizePolicy.Expanding, QSizePolicy.Preferred)
         self.quizzScreen=QuizzScreen()
         self.cameraScreen=CameraScreen()
         self.listesScreen=ListesScreen(listeElevesResultats)
         
-        self.afficher_reponses_eleves=QPushButton()
-        self.afficher_reponses_eleves.setFixedSize(QSize(100,100))
+        self.afficher_reponses_eleves=RoundedButton()
         self.afficher_reponses_eleves.setIcon(QIcon(r"C:\Users\13ist\OneDrive\Bureau\python\23-diploma.svg"))
-        self.afficher_reponses_eleves.setIconSize(QSize(80,80))
 
-        self.graphiqueButton=QPushButton()
-        self.graphiqueButton.setFixedSize(QSize(100,100))
+        self.graphiqueButton=RoundedButton()
         self.graphiqueButton.setIcon(QIcon(r"C:\Users\13ist\OneDrive\Bureau\python\48-abacus.svg"))
-        self.graphiqueButton.setIconSize(QSize(80,80))
-        self.setStyleSheet('''
-                                           QPushButton{
-                                           background-color:rgba(88,93,96,0.5);
-                                           border-width:2px;
-                                           border-color:black;
-                                           border-style:solid;
-                                           border-radius:50px;
-                                           opacity:0.3;
-                                           }
-
-                                           QPushButton:Hover{
-                                           background-color:#D4E2EF;
-                                           }
-                                           ''')
         
 
 
 
 
-        self.layout=QGridLayout()
-        self.layout.addWidget(self.quizzScreen,0,0,16,10)
-        self.layout.addWidget(self.cameraScreen,13,10,3,6,Qt.AlignmentFlag.AlignRight)
-        self.layout.addWidget(self.listesScreen,0,10,13,6)
-        self.layout.addWidget(self.graphiqueButton,15,15,1,1)
-        self.layout.addWidget(self.afficher_reponses_eleves,14,15,1,1)
-        
-        for i in range (16):
-            self.layout.setRowStretch(i,1)
-            self.layout.setColumnStretch(i,1)
-
+        self.layout=CustomLayout(self.geometry())
         self.setLayout(self.layout)
+
+        self.layout.addWidget(self.quizzScreen,0,0,16,10)
+        self.layout.addWidget(self.cameraScreen,11,10,5,6)
+        self.layout.addWidget(self.listesScreen,0,10,11,6)
+        self.layout.addWidget(self.graphiqueButton,11,14,2,2)
+        self.layout.addWidget(self.afficher_reponses_eleves,13,14,2,2)
+
+        self.layout.set_margin(10,10)
+
+        #### Signals Connexion ####
+
+        self.resizeEvent(self._on_resize())
+        
+    def setLayout(self, a0: CustomLayout) -> None:
+        super().setLayout(a0)    
+        a0.geometry_changed.emit( self.geometry() )
+        return None
+    
+    def _on_resize( self ) -> None :
+        self.layout.geometry_changed.emit( self.geometry() )
+        return None
+
+    def resizeEvent(self, event):
+        self._on_resize()
+        super().resizeEvent(event)
+

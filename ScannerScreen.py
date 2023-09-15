@@ -36,6 +36,7 @@ class ScannerScreen(QFrame):
     def destroyCreate(self,afficherGraph):
         if self.mainGrid.visibleGraph:
             self.mainGrid.graphScreen.deleteLater()
+            self.mainGrid.layout.deleteWidget(self.mainGrid.graphScreen)
             self.mainGrid.visibleGraph=False
         else:
             self.mainGrid.graphScreen=GraphScreen(self.reponseScanned)
@@ -235,12 +236,13 @@ class ScannerScreen(QFrame):
         layout=QVBoxLayout()
         self.mainGrid=MainGrid(listeElevesResultats)
         self.questionEnCours=self.selectQuestion(listeQuestions)
+        self.mainGrid.quizzScreen.set_score_label_text('score : '+self.get_question_score()+'%')
      
     
         
         
        
-        layout.addWidget(self.mainGrid,stretch=9)
+        layout.addWidget(self.mainGrid,stretch=12)
 
 
         self.bottomButtonsBar=QStackedWidget()
@@ -290,6 +292,7 @@ class ScannerScreen(QFrame):
             self.mainGrid.listesScreen.selectionModelGauche.clearSelection()
             self.mainGrid.listesScreen.selectionModelDroite.clearSelection()
             self.questionEnCours=self.selectQuestion(listeQuestions)
+            self.mainGrid.quizzScreen.set_score_label_text('score : '+self.get_question_score()+'%')
             self.reponseScanned=[]
             self.mainGrid.listesScreen.delete_all_responses()
             self.is_responses_showed = False
@@ -301,6 +304,7 @@ class ScannerScreen(QFrame):
             self.mainGrid.listesScreen.selectionModelGauche.clearSelection()
             self.mainGrid.listesScreen.selectionModelDroite.clearSelection()
             self.questionEnCours=self.selectQuestion(listeQuestions)
+            self.mainGrid.quizzScreen.set_score_label_text('score : '+self.get_question_score()+'%')
             self.reponseScanned=[]
             self.mainGrid.listesScreen.delete_all_responses()
             self.is_responses_showed = False
@@ -327,3 +331,12 @@ class ScannerScreen(QFrame):
         
         self.setLayout(layout)
         
+
+    def get_question_score( self ) -> str :
+        score=0
+        question_id = self.questionEnCours[1]
+        score = float(self.liste_questions[question_id][-1])*100   
+        score_text = str(int(score))
+
+        return score_text
+    

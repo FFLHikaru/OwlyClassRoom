@@ -24,7 +24,6 @@ class ClassSelectionScreen(QWidget):
 
             bouton.clicked.connect(lambda checked, text=bouton.text(): self.boutonClicked.emit(text))
             layout.addWidget(bouton, i//2, i%2)
-            print(i%2,i//2)
         self.setLayout(layout)
         
         

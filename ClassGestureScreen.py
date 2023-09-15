@@ -65,8 +65,6 @@ class ClassGestureScreen(QStackedWidget):
 
         punishment_index =  get_thing_index( transpose_table( self.comportement_table )[1], self.punishment_name ) 
         student_index = get_thing_index( self.comportement_table[0], self.student_name )
-        print(punishment_index)
-        print(student_index)
 
         punishment_value = self.get_punishment_value(self.comportement_table[punishment_index][1])
 
