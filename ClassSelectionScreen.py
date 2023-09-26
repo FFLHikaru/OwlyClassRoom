@@ -26,4 +26,7 @@ class ClassSelectionScreen(QWidget):
             layout.addWidget(bouton, i//2, i%2)
         self.setLayout(layout)
         
-        
+    #### Class methods ####
+
+    def has_camera( self ) -> bool :
+        return False   

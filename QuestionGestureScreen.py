@@ -16,7 +16,8 @@ class QuestionGestureScreen(QWidget):
         
 ####Méthodes de classe
 
-
+    def has_camera( self ) -> bool :
+        return False   
 
 ####Logic####
 

@@ -339,4 +339,9 @@ class ScannerScreen(QFrame):
         score_text = str(int(score))
 
         return score_text
-    
+    def has_camera( self ) -> bool :
+        return True
+
+    def stop_scan( self ) -> None : 
+        self.mainGrid.cameraScreen.camera.stop()
+        return None   

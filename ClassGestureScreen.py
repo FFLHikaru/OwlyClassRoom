@@ -50,6 +50,12 @@ class ClassGestureScreen(QStackedWidget):
         
 
     ####Methode de classe
+    def has_camera( self ) -> bool : 
+
+        return False
+    
+        
+
     def get_punishment_value( self, punishment_name : str ) -> int:
 
         if punishment_name[-3]==' ':

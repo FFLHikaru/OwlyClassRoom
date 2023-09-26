@@ -25,26 +25,38 @@ class MainScreen(QWidget):
 
         layout = QVBoxLayout()
         def scannerBoutonClicked():
+            if subMainScreen.currentWidget == scan_student_screen:
+                scan_student_screen.stop_scan()
+
             subMainScreen.setCurrentWidget(scannerScreen)
             scannerScreen.mainGrid.cameraScreen.camera.start()
             scannerScreen.bottomButtonsBar.setCurrentWidget(scannerScreen.buttonDemarrerScan)
+            
+
         def resultatBoutonClicked():
+            if subMainScreen.currentWidget().has_camera() :
+                print('caméra stopped')
+                subMainScreen.currentWidget().stop_scan()
             subMainScreen.setCurrentWidget(resultatsScreen)
-            scannerScreen.mainGrid.cameraScreen.camera.stop()
+
         
         def question_gesture_button_on_click():
-            if( subMainScreen.currentWidget == scannerScreen ):
-                scannerScreen.mainGrid.cameraScreen.camera.stop()
+            if subMainScreen.currentWidget().has_camera() :
+                print('caméra stopped')
+                subMainScreen.currentWidget().stop_scan()
             subMainScreen.setCurrentWidget(question_gesture_screen)
         
         def class_gesture_button_on_click():
-            if (subMainScreen.currentWidget == scannerScreen):
-                scannerScreen.mainGrid.cameraScreen.camera.stop()
+            if subMainScreen.currentWidget().has_camera() :
+                print('caméra stopped')
+                subMainScreen.currentWidget().stop_scan()
             subMainScreen.setCurrentWidget(class_gesture_screen)
 
         def scan_student_button_on_click():
-            if ( subMainScreen.currentWidget == scannerScreen ):
-                scannerScreen.mainGrid.cameraScreen.camera.stop
+            if subMainScreen.currentWidget().has_camera() :
+                print('caméra stopped')
+                subMainScreen.currentWidget().stop_scan()
+            scan_student_screen.start_scan()
             subMainScreen.setCurrentWidget( scan_student_screen )
             
         scannerScreen=ScannerScreen(listeElevesResultats,listeQuestions,nomClasse)
