@@ -49,7 +49,11 @@ class StudentButton(QPushButton):
     #### Public Class Metods ####
     def marker_detected( self ) -> None : 
         self.setStyleSheet( style_sheet("orange") )
-
+        if self.is_selected :
+            return None
+        else :
+            self.is_selected = True
+            self.selection_changed.emit()
         return None
     
     def reset_button( self ) -> None : 

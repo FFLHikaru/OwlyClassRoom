@@ -13,6 +13,13 @@ class CustomLayout(QLayout):
     geometry_changed = pyqtSignal( QRect )
 
     ####Built-in####
+    def count( self ) : 
+        return 0
+    def addItem( self,arg1):
+        return None
+    def itemAt( self, arg1 ):
+        return None
+
 
     def __init__( self, dim : QRect = QRect(0,0,1920,1080) ):
         super().__init__()
@@ -50,7 +57,8 @@ class CustomLayout(QLayout):
         for i in range(len( self.widget_list )):
             if self.widget_list[i][0] == widget :
                 del self.widget_list[i]
-            else : 
+                self.removeWidget( widget )
+            else :  
                 col_list.append(self.widget_list[i][2]+self.widget_list[i][4])
                 row_list.append(self.widget_list[i][1]+self.widget_list[i][3])
         if max(col_list) < self.column_count :
@@ -70,10 +78,21 @@ class CustomLayout(QLayout):
         self._create_new_line_needed( row, row_span )
         self._create_new_col_needed( column, column_span )
         self._adjust_dimension_and_position()
-        
-        print(self.row_count,self.column_count)
+
         return None
-    
+
+    def moveWidget ( self, widget : QWidget , row : int = 0, column : int = 0, row_span : int = 1, column_span : int = 1) -> None :
+        index = 0
+        while self.widget_list[index][0] != widget : 
+                index+=1
+                print(index)
+        self.widget_list[index] = [widget, row, column, row_span, column_span]
+        self._create_new_line_needed( row, row_span )
+        self._create_new_col_needed( column, column_span )
+        self._adjust_dimension_and_position()
+
+        return None
+
     def set_padding( self, left : int, top : int, right : int, bottom : int) -> None : 
         if self.padding == [ left, top, right, bottom ]:
             return None

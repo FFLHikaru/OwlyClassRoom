@@ -61,7 +61,7 @@ class MainScreen(QWidget):
             
         scannerScreen=ScannerScreen(listeElevesResultats,listeQuestions,nomClasse)
         resultatsScreen=ResultatsScreen()
-        question_gesture_screen=QuestionGestureScreen()
+        question_gesture_screen=QuestionGestureScreen( deepcopy( listeElevesResultats ), nomClasse )
         class_gesture_screen=ClassGestureScreen(nomClasse)
         scan_student_screen = ScanStudentScreen( deepcopy( listeElevesResultats ) )
 
