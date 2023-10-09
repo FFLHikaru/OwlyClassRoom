@@ -87,4 +87,6 @@ class PunishmentScreen(QWidget):
             self.main_layout.removeWidget( button )
         self.punishments_button_list = []
         return None
+    
+    
 #### Logic ####

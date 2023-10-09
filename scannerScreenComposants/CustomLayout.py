@@ -51,22 +51,22 @@ class CustomLayout(QLayout):
 
     #### Class methods #### 
 
+    def delete_all( self ) -> None : 
+        for widget in self.widget_list : 
+            widget[0].deleteLater()
+            self.removeWidget(widget[0])
+        self.widget_list=[]
+
     def deleteWidget( self, widget : QWidget ) -> None :
-        col_list=[]
-        row_list=[]
         for i in range(len( self.widget_list )):
             if self.widget_list[i][0] == widget :
-                del self.widget_list[i]
+                print('widget trouvé')
+                self.widget_list.pop(i)
                 self.removeWidget( widget )
-            else :  
-                col_list.append(self.widget_list[i][2]+self.widget_list[i][4])
-                row_list.append(self.widget_list[i][1]+self.widget_list[i][3])
-        if max(col_list) < self.column_count :
-            self._reduce_column_count(max(col_list))
-        if max(row_list) < self.row_count : 
-            self._reduce_row_count(max(row_list))
-        return None
 
+            
+                return None
+        return None
         
 
 
@@ -112,6 +112,7 @@ class CustomLayout(QLayout):
         return None
 
     def _adjust_dimension_and_position( self ) -> None :
+        len(self.widget_list)
 
         for widget in self.widget_list : 
             current_width = widget[0].width()

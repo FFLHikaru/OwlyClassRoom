@@ -86,6 +86,7 @@ class ScannerScreen(QFrame):
             writer = csv.writer(fichier,delimiter=";")
             for ligne in self.liste_questions:
                 writer.writerow(ligne)
+                
   
         
 
@@ -226,6 +227,26 @@ class ScannerScreen(QFrame):
 
         return [questionMelange,idFinal]
     
+    def _refresh_student_list( self ) -> None : 
+        self.listeResultats=[]
+        with open(f"listeEleves{self.nomClasse}.csv", newline="") as fichier:
+            lecteur = csv.reader(fichier, delimiter=";")
+            for ligne in lecteur:
+                self.listeResultats.append(ligne)
+        self.mainGrid.listesScreen.student_list_update( self.listeResultats )
+        return None
+        
+    def _refresh_question_list( self ) -> None : 
+        self.liste_questions=[]
+        with open(f"listeQuestion{self.nomClasse}.csv",newline="") as fichier : 
+            lecteur = csv.reader(fichier, delimiter=";")
+            for ligne in lecteur :
+                self.liste_questions.append(ligne)
+        
+        self.questionEnCours=self.selectQuestion(self.liste_questions)
+        print('refreshed')
+        return None
+
     def __init__(self,listeElevesResultats,listeQuestions,nomClasse):
         self.liste_questions=copy.deepcopy(listeQuestions[:])
         self.reponseScanned=[]
@@ -235,7 +256,7 @@ class ScannerScreen(QFrame):
         super().__init__()
         layout=QVBoxLayout()
         self.mainGrid=MainGrid(listeElevesResultats)
-        self.questionEnCours=self.selectQuestion(listeQuestions)
+        self.questionEnCours=self.selectQuestion(self.liste_questions)
         self.mainGrid.quizzScreen.set_score_label_text('score : '+self.get_question_score()+'%')
      
     
@@ -291,7 +312,7 @@ class ScannerScreen(QFrame):
             self.scanning=False
             self.mainGrid.listesScreen.selectionModelGauche.clearSelection()
             self.mainGrid.listesScreen.selectionModelDroite.clearSelection()
-            self.questionEnCours=self.selectQuestion(listeQuestions)
+            self.questionEnCours=self.selectQuestion(self.liste_questions)
             self.mainGrid.quizzScreen.set_score_label_text('score : '+self.get_question_score()+'%')
             self.reponseScanned=[]
             self.mainGrid.listesScreen.delete_all_responses()
@@ -303,7 +324,7 @@ class ScannerScreen(QFrame):
             self.scanning=False
             self.mainGrid.listesScreen.selectionModelGauche.clearSelection()
             self.mainGrid.listesScreen.selectionModelDroite.clearSelection()
-            self.questionEnCours=self.selectQuestion(listeQuestions)
+            self.questionEnCours=self.selectQuestion(self.liste_questions)
             self.mainGrid.quizzScreen.set_score_label_text('score : '+self.get_question_score()+'%')
             self.reponseScanned=[]
             self.mainGrid.listesScreen.delete_all_responses()

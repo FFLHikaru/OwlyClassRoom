@@ -16,7 +16,7 @@ class QuestionGestureScreen(QTabWidget):
 
         #### Widget ####
         self.class_parameter_screen = ClassParamScreen( deepcopy( self.student_list ), class_name )
-        self.question_parameter_screen = QuestionParamScreen( deepcopy( self.student_list ) )
+        self.question_parameter_screen = QuestionParamScreen( class_name )
 
 
 

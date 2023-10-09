@@ -116,8 +116,18 @@ class ClassGestureScreen(QStackedWidget):
     
 
     
-
-
+    def reinit( self ) -> None : 
+        self.student_list_screen.list_updated()
+        return None
+    
+    def refresh_comportement_table( self ) -> None : 
+        self.comportement_table=[]
+        with open(f"comportement{self.class_name}.csv", newline="") as fichier:
+            lecteur = csv.reader(fichier, delimiter=";")
+            for ligne in lecteur:
+                self.comportement_table.append(ligne)
+        print(self.comportement_table)
+        return None
 
  ####Logic####
 

@@ -101,10 +101,19 @@ class ListesScreen(QFrame):
         for j in range( 1, longueur_totale+1 ) : 
             self.delete_response( j )
 
+    def student_list_update( self, updated_list ) -> None :
+        self.listePrenomGauche=[ligne[0] for ligne in updated_list[1:(len(updated_list)-1)//2+1]]
+        self.listModelGauche.setStringList(self.listePrenomGauche)
+    
+        listePrenomDroite=[ligne[0] for ligne in updated_list[(len(updated_list)-1)//2+1:]]
+        self.listeModelDroite.setStringList(listePrenomDroite)
+        return None
+    
 
 def seek_scanned_responses( responses_list : list , id : int ) -> str:
     for response in responses_list : 
         if response[1] == id :
             return " "+response[0]
     return " "
+
 

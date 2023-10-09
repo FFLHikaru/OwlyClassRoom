@@ -10,20 +10,63 @@ from copy import deepcopy
 class MainScreen(QWidget):
     def __init__(self,nomClasse):
         super().__init__()
-        listeElevesResultats=[]
+        self.listeElevesResultats=[]
         with open(f"listeEleves{nomClasse}.csv", newline="") as fichier:
             lecteur = csv.reader(fichier, delimiter=";")
             for ligne in lecteur:
-                listeElevesResultats.append(ligne)
+                self.listeElevesResultats.append(ligne)
+
+        if len(self.listeElevesResultats) < 2 :
+            self.listeElevesResultats=[['nom'],["eleve 1","[0, 0]"]]
+            with open(f"listeEleves{nomClasse}.csv", newline="", mode='w') as fichier:
+                    writer = csv.writer(fichier,delimiter=";")
+                    for ligne in self.listeElevesResultats:
+                        writer.writerow(ligne)
+
         
         listeQuestions=[]
         with open(f"listeQuestion{nomClasse}.csv",newline="") as fichier : 
             lecteur = csv.reader(fichier, delimiter=";")
             for ligne in lecteur :
                 listeQuestions.append(ligne)
+
+        if len(listeQuestions)<2 : 
+            listeQuestions = [["enonce","reponse","reponse","reponse","reponse","score"],["enonce","bonne reponse","mauvais reponse","mauvaise reponse","mauvaise reponse",'0.2']]
+
+            with open(f"listeQuestion{nomClasse}.csv", newline="", mode='w') as fichier:
+                writer = csv.writer(fichier,delimiter=";")
+                for ligne in listeQuestions:
+                    writer.writerow(ligne)
+        
+
+        
 #########################################################################################################
 
         layout = QVBoxLayout()
+
+        def _refresh_student_list(  ) -> None : 
+            self.listeElevesResultats=[]
+            with open(f"listeEleves{nomClasse}.csv", newline="") as fichier:
+                lecteur = csv.reader(fichier, delimiter=";")
+                for ligne in lecteur:
+                    self.listeElevesResultats.append(ligne)
+            scannerScreen._refresh_student_list()
+            class_gesture_screen.reinit()
+            class_gesture_screen.refresh_comportement_table()
+            
+            return None
+        
+        def _refresh_question_list(  ) -> None : 
+            listeQuestions=[]
+            with open(f"listeQuestion{nomClasse}.csv",newline="") as fichier : 
+                lecteur = csv.reader(fichier, delimiter=";")
+                for ligne in lecteur :
+                    listeQuestions.append(ligne)
+            scannerScreen._refresh_question_list()
+            
+            print('refreshed')
+            return None
+
         def scannerBoutonClicked():
             if subMainScreen.currentWidget == scan_student_screen:
                 scan_student_screen.stop_scan()
@@ -59,11 +102,11 @@ class MainScreen(QWidget):
             scan_student_screen.start_scan()
             subMainScreen.setCurrentWidget( scan_student_screen )
             
-        scannerScreen=ScannerScreen(listeElevesResultats,listeQuestions,nomClasse)
+        scannerScreen=ScannerScreen(self.listeElevesResultats,listeQuestions,nomClasse)
         resultatsScreen=ResultatsScreen()
-        question_gesture_screen=QuestionGestureScreen( deepcopy( listeElevesResultats ), nomClasse )
+        question_gesture_screen=QuestionGestureScreen( deepcopy( self.listeElevesResultats ), nomClasse )
         class_gesture_screen=ClassGestureScreen(nomClasse)
-        scan_student_screen = ScanStudentScreen( deepcopy( listeElevesResultats ) )
+        scan_student_screen = ScanStudentScreen( deepcopy( self.listeElevesResultats ) )
 
         subMainScreen=QStackedWidget()
         subMainScreen.addWidget(scannerScreen)
@@ -178,5 +221,7 @@ class MainScreen(QWidget):
         
         self.setLayout(layout)
     
+        question_gesture_screen.question_parameter_screen.question_edited.connect(_refresh_question_list)
+        question_gesture_screen.class_parameter_screen.student_list_edited.connect(_refresh_student_list)
     
     

@@ -36,6 +36,12 @@ class StudentListScreen(QWidget):
             student_button.button_click.connect(self.on_student_button_click)
     
     ####Méthodes de classe####
+    def delete_all( self ) -> None : 
+        for button in self.student_button_list : 
+            self.main_Layout.removeWidget(button)
+            button.deleteLater()
+        return None
+    
     def get_student_score( self , student_name) -> int : 
         score = 10
         for i in range(1,len(self.comportement_table)):
@@ -44,8 +50,8 @@ class StudentListScreen(QWidget):
             
     
     def get_student_column( self , student_name : str ) -> int : 
-        column = 0
-        for name in self.comportement_table[0]:
+        column = 2
+        for name in self.comportement_table[0][2:]:
             if name == student_name : 
                 return column      
             column+=1
@@ -54,7 +60,7 @@ class StudentListScreen(QWidget):
     def set_button_on_grid( self ) -> None :
         for i in range (5):
             for j in range (7):
-                if i*5+j<len(self.student_button_list):
+                if i*7+j<len(self.student_button_list):
                     self.main_Layout.addWidget(self.student_button_list[i*7+j],i,j)
         return None
         
@@ -75,6 +81,20 @@ class StudentListScreen(QWidget):
             student_button.set_button_color( student_score )
         
     
+    def list_updated( self ) -> None : 
+        self.delete_all()
+        self.student_button_list=[]
+        self.comportement_table=[]
+        with open(f"comportement{self.class_name}.csv", newline="") as fichier:
+            lecteur = csv.reader(fichier, delimiter=";")
+            for ligne in lecteur:
+                self.comportement_table.append(ligne)
+
+        self.set_student_button_list()
+        self.set_button_on_grid()
+        for student_button in self.student_button_list:
+            student_button.button_click.connect(self.on_student_button_click)
+        
 
 
      #### Signals responses####

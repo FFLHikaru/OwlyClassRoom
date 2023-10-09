@@ -43,9 +43,9 @@ class NeumorphicLabel(QLabel):
 
     #### Class methods ####
 
-    def setPixmap(self, formula : str) -> None:
+    def setPixmap(self, formula : str, font_size : int = 24) -> None:
         self.text = formula
-        self.image=tex2svg(formula)
+        self.image=tex2svg(formula, font_size)
         self.rescale_after_resize()
 
         return super().setPixmap(self.image)
