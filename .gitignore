@@ -5,3 +5,9 @@ Lib/
 share/
 *.jpg
 pyvenv.cfg
+output/
+android-ndk-r27/
+android-ndk-r27-windows/
+android-ndk-r27-windows.zip
+sysroot.toml
+buildozer.spec

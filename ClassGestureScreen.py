@@ -126,7 +126,6 @@ class ClassGestureScreen(QStackedWidget):
             lecteur = csv.reader(fichier, delimiter=";")
             for ligne in lecteur:
                 self.comportement_table.append(ligne)
-        print(self.comportement_table)
         return None
 
  ####Logic####

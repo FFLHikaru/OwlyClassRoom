@@ -1,7 +1,8 @@
+import typing
 from PyQt5.QtWidgets import QPushButton
 from PyQt5.QtCore import pyqtSignal
 
-class StudentButton(QPushButton):
+class StudentButton( QPushButton ):
     student_name=''
     color_hexa=''
     
@@ -14,7 +15,7 @@ class StudentButton(QPushButton):
         
         self.student_name=student_name
         super().__init__()
-        self.setStyleSheet( style_sheet( score_to_hexa_string( student_score ) ) )
+        self.setStyleSheet( self.style_sheet( self.score_to_hexa_string( student_score ) ) )
         
         self.setText(student_name)
     ####signals connection####
@@ -27,8 +28,8 @@ class StudentButton(QPushButton):
 
     #### Class Methods #### 
     def set_button_color( self , score : int ) -> None :
-        color_hex : str = score_to_hexa_string( score )
-        self.setStyleSheet(style_sheet( color_hex ))
+        color_hex : str = self.score_to_hexa_string( score )
+        self.setStyleSheet(self.style_sheet( color_hex ))
         return None
     
 
@@ -38,34 +39,34 @@ class StudentButton(QPushButton):
 
 
 ####Logic####
-def score_to_hexa_string( score : int ) -> str :
-    min_score = 0
-    max_score = 20
+    def score_to_hexa_string( self, score : int ) -> str :
+        min_score = 0
+        max_score = 20
 
-    normalized_score = (score - min_score) / (max_score - min_score)
+        normalized_score = (score - min_score) / (max_score - min_score)
 
-    red = int((1 - normalized_score) * 255)
-    green = int(normalized_score * 255)
-    blue = 0 
+        red = int((1 - normalized_score) * 255)
+        green = int(normalized_score * 255)
+        blue = 0 
 
-    color_hex = "#{:02X}{:02X}{:02X}".format(red, green, blue)
+        color_hex = "#{:02X}{:02X}{:02X}".format(red, green, blue)
 
-    return color_hex
+        return color_hex
 
-def style_sheet( color_hex : str ) -> str:
-    return ('QPushButton{' + f'''    
-                    font:bold;
-                    font-size:20px;
-                    border-color:black;
-                    border-width:2px;
-                    border-style:solid;
-                    border-radius: 20px;
-                    padding : 20px;
-                    background-color: {color_hex};           
-            '''+'''}
-            QPushButton:hover{
-                background-color: red;
-            }
-            
+    def style_sheet( self, color_hex : str ) -> str:
+        return ('QPushButton{' + f'''    
+                        font:bold;
+                        font-size:20px;
+                        border-color:black;
+                        border-width:2px;
+                        border-style:solid;
+                        border-radius: 20px;
+                        padding : 20px;
+                        background-color: {color_hex};           
+                '''+'''}
+                QPushButton:hover{
+                    background-color: red;
+                }
+                
 
-            ''' )
+                ''' )
